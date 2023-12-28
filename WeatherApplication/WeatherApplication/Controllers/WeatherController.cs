@@ -34,7 +34,7 @@ namespace WeatherApplication.Controllers
                 dynamic data = JsonConvert.DeserializeObject(responseStream);
                 WeatherForecast weather = new WeatherForecast();
                 weather.City = data.name;
-                weather.Temperature = data.main.temp; // Konwersja na Celsjusze
+                weather.Temperature = data.main.temp; 
                 weather.Description = data.weather[0].description;
                 return View(weather);
             }
