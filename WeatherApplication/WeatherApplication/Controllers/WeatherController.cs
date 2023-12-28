@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using WeatherApplication.Models;
 
@@ -7,10 +8,14 @@ namespace WeatherApplication.Controllers
     public class WeatherController : Controller
     {
         private readonly IHttpClientFactory _clientFactory;
+        private readonly WeatherDbContext _dbContext;
 
-        public WeatherController(IHttpClientFactory clientFactory)
+
+        public WeatherController(IHttpClientFactory clientFactory, WeatherDbContext dbContext)
         {
             _clientFactory = clientFactory;
+            _dbContext = dbContext;
+
         }
 
         [HttpGet]
@@ -22,7 +27,7 @@ namespace WeatherApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(string city)
         {
-            var apiKey = "InsertHereYourApiKey";
+            var apiKey = "InsertYourApiKeyHere";
             var request = new HttpRequestMessage(HttpMethod.Get,
                 $"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric");
             var client = _clientFactory.CreateClient();
@@ -36,6 +41,18 @@ namespace WeatherApplication.Controllers
                 weather.City = data.name;
                 weather.Temperature = data.main.temp; 
                 weather.Description = data.weather[0].description;
+
+                // Zapisywanie dane do bazy danych
+                var weatherData = new WeatherData
+                {
+                    City = weather.City,
+                    Temperature = weather.Temperature.ToString(),
+                    Description = weather.Description
+                };
+                _dbContext.WeatherData.Add(weatherData);
+                await _dbContext.SaveChangesAsync();
+
+
                 return View(weather);
             }
             else

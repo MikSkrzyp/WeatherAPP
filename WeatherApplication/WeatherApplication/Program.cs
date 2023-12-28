@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WeatherApplication.Data;
+using WeatherApplication.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+
+builder.Services.AddDbContext<WeatherDbContext>(
+    options => options.UseSqlServer(
+        builder.Configuration.GetConnectionString("WeatherConnection")));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
