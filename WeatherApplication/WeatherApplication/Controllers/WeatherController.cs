@@ -21,13 +21,14 @@ namespace WeatherApplication.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View(new WeatherForecast());
+            var weatherData = _dbContext.WeatherData.ToList();
+            return View(new Tuple<List<WeatherData>, WeatherForecast>(weatherData, new WeatherForecast()));
         }
 
         [HttpPost]
         public async Task<IActionResult> Index(string city)
         {
-            var apiKey = "InsertYourApiKeyHere";
+            var apiKey = "Insert Here Api Key";
             var request = new HttpRequestMessage(HttpMethod.Get,
                 $"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric");
             var client = _clientFactory.CreateClient();
@@ -53,7 +54,10 @@ namespace WeatherApplication.Controllers
                 await _dbContext.SaveChangesAsync();
 
 
-                return View(weather);
+                // Pobierz wszystkie dane z bazy danych
+                var allWeatherData = _dbContext.WeatherData.ToList();
+
+                return View(new Tuple<List<WeatherData>, WeatherForecast>(allWeatherData, weather));
             }
             else
             {
