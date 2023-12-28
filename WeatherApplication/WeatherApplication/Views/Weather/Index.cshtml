@@ -1,0 +1,16 @@
+﻿@model WeatherForecast
+
+<form method="post" action="/Weather/Index">
+    <label for="city">Wprowadź nazwę miasta:</label><br>
+    <input type="text" id="city" name="city" required><br>
+    <input type="submit" value="Sprawdź pogodę">
+</form>
+
+@if (Model != null && !String.IsNullOrEmpty(Model.City))
+{
+    <div>
+        <h2>Pogoda dla: @Model.City</h2>
+        <p>Temperatura: @Model.Temperature</p>
+        <p>Opis: @Model.Description</p>
+    </div>
+}

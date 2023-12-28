@@ -83,3 +83,7 @@ C:\Users\Mikolaj_2\Desktop\WeatherAPP\WeatherApplication\WeatherApplication\obj\
 C:\Users\Mikolaj_2\Desktop\WeatherAPP\WeatherApplication\WeatherApplication\obj\Debug\net7.0\WeatherApplication.pdb
 C:\Users\Mikolaj_2\Desktop\WeatherAPP\WeatherApplication\WeatherApplication\obj\Debug\net7.0\WeatherApplication.genruntimeconfig.cache
 C:\Users\Mikolaj_2\Desktop\WeatherAPP\WeatherApplication\WeatherApplication\obj\Debug\net7.0\ref\WeatherApplication.dll
+C:\Users\Mikolaj_2\Desktop\WeatherAPP\WeatherApplication\WeatherApplication\bin\Debug\net7.0\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\Mikolaj_2\Desktop\WeatherAPP\WeatherApplication\WeatherApplication\bin\Debug\net7.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\Mikolaj_2\Desktop\WeatherAPP\WeatherApplication\WeatherApplication\bin\Debug\net7.0\Newtonsoft.Json.dll
+C:\Users\Mikolaj_2\Desktop\WeatherAPP\WeatherApplication\WeatherApplication\bin\Debug\net7.0\Newtonsoft.Json.Bson.dll
