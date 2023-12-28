@@ -1,39 +1,54 @@
 ﻿@model Tuple<List<WeatherData>, WeatherForecast>
 
-<form method="post" action="/Weather/Index">
-    <label for="city">Wprowadź nazwę miasta:</label><br>
-    <input type="text" id="city" name="city" required><br>
-    <input type="submit" value="Sprawdź pogodę">
-</form>
+<body>
+    <div class="container">
+        <form method="post" action="/Weather/Index">
+            <div class="form-group">
+                <label for="city">Enter City Name:</label>
+                <input type="text" id="city" name="city" class="form-control" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary mt-2">Check Weather</button>
+        </form>
+        <br />
 
-@if (Model.Item2 != null && !String.IsNullOrEmpty(Model.Item2.City))
-{
-    <div>
-        <h2>Pogoda dla: @Model.Item2.City</h2>
-        <p>Temperatura: @Model.Item2.Temperature</p>
-        <p>Opis: @Model.Item2.Description</p>
+        @if (Model.Item2 != null && !String.IsNullOrEmpty(Model.Item2.City))
+        {
+            <div class="weather-data">
+                <h2 class="weather-title">Weather for: @Model.Item2.City</h2>
+                <p class="weather-temperature">Temperature: @Model.Item2.Temperature</p>
+                <p class="weather-description">Conditions: @Model.Item2.Description</p>
+            </div>
+        }
+
+        <br />
+        <br />
+        <br />
+
+        @if (Model.Item1 != null && Model.Item1.Any())
+        {
+            <h2 class="weather-title">Your Last Weather Searches</h2>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>City</th>
+                        <th>Temperature</th>
+                        <th>Conditions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var data in Model.Item1)
+                    {
+                        <tr>
+                            <td>@data.City</td>
+                            <td>@data.Temperature</td>
+                            <td>@data.Description</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     </div>
-}
-
-@if (Model.Item1 != null && Model.Item1.Any())
-{
-    <table>
-        <thead>
-            <tr>
-                <th>Miasto</th>
-                <th>Temperatura</th>
-                <th>Opis</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var data in Model.Item1)
-            {
-                <tr>
-                    <td>@data.City</td>
-                    <td>@data.Temperature</td>
-                    <td>@data.Description</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+</body>

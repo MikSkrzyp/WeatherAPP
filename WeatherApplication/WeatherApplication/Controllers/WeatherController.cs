@@ -2,6 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using WeatherApplication.Models;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace WeatherApplication.Controllers
 {
@@ -10,12 +14,10 @@ namespace WeatherApplication.Controllers
         private readonly IHttpClientFactory _clientFactory;
         private readonly WeatherDbContext _dbContext;
 
-
         public WeatherController(IHttpClientFactory clientFactory, WeatherDbContext dbContext)
         {
             _clientFactory = clientFactory;
             _dbContext = dbContext;
-
         }
 
         [HttpGet]
@@ -28,7 +30,7 @@ namespace WeatherApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(string city)
         {
-            var apiKey = "Insert Here Api Key";
+            var apiKey = "InsertHereApiKey";
             var request = new HttpRequestMessage(HttpMethod.Get,
                 $"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric");
             var client = _clientFactory.CreateClient();
@@ -38,9 +40,11 @@ namespace WeatherApplication.Controllers
             {
                 var responseStream = await response.Content.ReadAsStringAsync();
                 dynamic data = JsonConvert.DeserializeObject(responseStream);
+              
+
                 WeatherForecast weather = new WeatherForecast();
                 weather.City = data.name;
-                weather.Temperature = data.main.temp; 
+                weather.Temperature = data.main.temp;
                 weather.Description = data.weather[0].description;
 
                 // Zapisywanie dane do bazy danych
@@ -53,7 +57,6 @@ namespace WeatherApplication.Controllers
                 _dbContext.WeatherData.Add(weatherData);
                 await _dbContext.SaveChangesAsync();
 
-
                 // Pobierz wszystkie dane z bazy danych
                 var allWeatherData = _dbContext.WeatherData.ToList();
 
@@ -61,12 +64,9 @@ namespace WeatherApplication.Controllers
             }
             else
             {
-                return View(new WeatherForecast());
+                return View(new Tuple<List<WeatherData>, WeatherForecast>(_dbContext.WeatherData.ToList(), new WeatherForecast()));
             }
         }
 
     }
-
-
-
 }
