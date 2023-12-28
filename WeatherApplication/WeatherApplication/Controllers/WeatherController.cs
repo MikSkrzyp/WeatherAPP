@@ -22,7 +22,7 @@ namespace WeatherApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(string city)
         {
-            var apiKey = "34cdd37450c44856675c25050b032e93";
+            var apiKey = "InsertHereYourApiKey";
             var request = new HttpRequestMessage(HttpMethod.Get,
                 $"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric");
             var client = _clientFactory.CreateClient();
