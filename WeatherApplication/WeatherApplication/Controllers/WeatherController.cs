@@ -30,7 +30,7 @@ namespace WeatherApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(string city)
         {
-            var apiKey = "InsertHereApiKey";
+            var apiKey = "Insert Here Api Key";
             var request = new HttpRequestMessage(HttpMethod.Get,
                 $"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric");
             var client = _clientFactory.CreateClient();
@@ -67,6 +67,21 @@ namespace WeatherApplication.Controllers
                 return View(new Tuple<List<WeatherData>, WeatherForecast>(_dbContext.WeatherData.ToList(), new WeatherForecast()));
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var weatherData = await _dbContext.WeatherData.FindAsync(id);
+            if (weatherData == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.WeatherData.Remove(weatherData);
+            await _dbContext.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
     }
 }

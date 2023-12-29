@@ -43,6 +43,12 @@
                             <td>@data.City</td>
                             <td>@data.Temperature</td>
                             <td>@data.Description</td>
+                            <td>
+                                <form method="post" action="/Weather/Delete">
+                                    <input type="hidden" name="id" value="@data.Id" />
+                                    <input type="submit" value="Delete" />
+                                </form>
+                            </td>
                         </tr>
                     }
                 </tbody>
