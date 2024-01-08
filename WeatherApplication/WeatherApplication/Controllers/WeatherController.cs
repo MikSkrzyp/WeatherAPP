@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace WeatherApplication.Controllers
 {
@@ -15,32 +16,24 @@ namespace WeatherApplication.Controllers
     {
         private readonly IHttpClientFactory _clientFactory;
         private readonly WeatherDbContext _dbContext;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public WeatherController(IHttpClientFactory clientFactory, WeatherDbContext dbContext)
+        public WeatherController(IHttpClientFactory clientFactory, WeatherDbContext dbContext,UserManager<IdentityUser> userManager)
         {
             _clientFactory = clientFactory;
             _dbContext = dbContext;
+            _userManager = userManager;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            // Creating a list of names
-            List<string> simpleNames = new List<string>
-        {
-            "Alice",
-            "Bob",
-            "Charlie",
-            "David",
-            "Emma",
-            "Frank",
-            "Grace",
-            "Henry",
-            "Isabel",
-            "Jack"
-        };
+            // Pobierz wszystkie dane z bazy danych
+            var allUsersData = _userManager.Users.ToList();
+            var allUsersDataUsernames = allUsersData.Select(u => u.UserName).ToList();
+
             var weatherData = _dbContext.WeatherData.OrderByDescending(w => w.Id).ToList();
-            return View(new Tuple<List<WeatherData>, WeatherForecast,List<string>>(weatherData, new WeatherForecast(),simpleNames));
+            return View(new Tuple<List<WeatherData>, WeatherForecast,List<string>>(weatherData, new WeatherForecast(),allUsersDataUsernames));
         }
 
         [HttpPost]
