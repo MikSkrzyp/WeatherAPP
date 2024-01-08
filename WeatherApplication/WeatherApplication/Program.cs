@@ -43,6 +43,28 @@ using (var scope = app.Services.CreateScope())
 
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+    string email = "admin@admin.com";
+    string password = "zaq1@WSX";
+
+    if(await userManager.FindByEmailAsync(email)==null)
+    {
+        var user = new IdentityUser();
+        user.Email = email;
+        user.UserName = email;
+        user.EmailConfirmed = true;
+
+        await userManager.CreateAsync(user, password);
+
+        await userManager.AddToRoleAsync(user, "admin");
+
+    }
+
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
