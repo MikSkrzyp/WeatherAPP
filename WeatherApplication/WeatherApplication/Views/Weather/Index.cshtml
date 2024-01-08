@@ -2,6 +2,14 @@
 
 <body>
     <div class="container">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+    <div class="container">
         <form method="post" action="/Weather/Index">
             <div class="form-group">
                 <label for="city">Enter City Name:</label>
