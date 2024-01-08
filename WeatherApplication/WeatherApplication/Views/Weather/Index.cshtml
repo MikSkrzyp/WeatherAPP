@@ -8,65 +8,63 @@
                 @TempData["ErrorMessage"]
             </div>
         }
+        <!-- Move the closing div inside the first container -->
+        <div class="container">
+            <form method="post" action="/Weather/Index">
+                <div class="form-group">
+                    <label for="city">Enter City Name:</label>
+                    <input type="text" id="city" name="city" maxlength="20" required pattern="^[a-zA-Z\s]+$" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Check Weather</button>
+            </form>
+            <br />
 
-    <div class="container">
-        <form method="post" action="/Weather/Index">
-            <div class="form-group">
-                <label for="city">Enter City Name:</label>
-                <input type="text" id="city" name="city" class="form-control" required>
-            </div>
-            
-            <button type="submit" class="btn btn-primary mt-2">Check Weather</button>
-        </form>
-        <br />
+            @if (Model.Item2 != null && !String.IsNullOrEmpty(Model.Item2.City))
+            {
+                <div class="weather-data">
+                    <h2 class="weather-title">Weather for: @Model.Item2.City</h2>
+                    <p class="weather-temperature">Temperature: @Model.Item2.Temperature</p>
+                    <p class="weather-description">Conditions: @Model.Item2.Description</p>
+                </div>
+            }
 
-        @if (Model.Item2 != null && !String.IsNullOrEmpty(Model.Item2.City))
-        {
-            <div class="weather-data">
-                <h2 class="weather-title">Weather for: @Model.Item2.City</h2>
-                <p class="weather-temperature">Temperature: @Model.Item2.Temperature</p>
-                <p class="weather-description">Conditions: @Model.Item2.Description</p>
-            </div>
-        }
+            <br />
+            <br />
+            <br />
 
-        <br />
-        <br />
-        <br />
-
-        @if (Model.Item1 != null && Model.Item1.Any())
-        {
-            <h2 class="weather-title">Your Last Weather Searches</h2>
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>City</th>
-                            <th>Temperature</th>
-                            <th>Conditions</th>
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var data in Model.Item1)
-                        {
+            @if (Model.Item1 != null && Model.Item1.Any())
+            {
+                <h2 class="weather-title">Your Last Weather Searches</h2>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
                             <tr>
-                                <td>@data.City</td>
-                                <td>@data.Temperature</td>
-                                <td>@data.Description</td>
-                                <td style="width: 5%">
-                                    <form method="post" action="/Weather/Delete" onsubmit="return confirm('Are you sure you want to delete this record?');">
-                                        <input type="hidden" name="id" value="@data.Id" />
-                                        <button type="submit" class="btn btn-danger w-100">X</button>
-                                    </form>
-                                </td>
+                                <th>City</th>
+                                <th>Temperature</th>
+                                <th>Conditions</th>
+                                <th>Delete</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-
-
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+                        </thead>
+                        <tbody>
+                            @foreach (var data in Model.Item1)
+                            {
+                                <tr>
+                                    <td>@data.City</td>
+                                    <td>@data.Temperature</td>
+                                    <td>@data.Description</td>
+                                    <td style="width: 5%">
+                                        <form method="post" action="/Weather/Delete" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                                            <input type="hidden" name="id" value="@data.Id" />
+                                            <button type="submit" class="btn btn-danger w-100">X</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
     </div>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
