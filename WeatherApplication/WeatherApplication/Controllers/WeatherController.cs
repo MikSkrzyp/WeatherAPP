@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WeatherApplication.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "user")]
     public class WeatherController : Controller
     {
         private readonly IHttpClientFactory _clientFactory;
