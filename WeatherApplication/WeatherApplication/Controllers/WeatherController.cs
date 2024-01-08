@@ -25,8 +25,22 @@ namespace WeatherApplication.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            // Creating a list of names
+            List<string> simpleNames = new List<string>
+        {
+            "Alice",
+            "Bob",
+            "Charlie",
+            "David",
+            "Emma",
+            "Frank",
+            "Grace",
+            "Henry",
+            "Isabel",
+            "Jack"
+        };
             var weatherData = _dbContext.WeatherData.OrderByDescending(w => w.Id).ToList();
-            return View(new Tuple<List<WeatherData>, WeatherForecast>(weatherData, new WeatherForecast()));
+            return View(new Tuple<List<WeatherData>, WeatherForecast,List<string>>(weatherData, new WeatherForecast(),simpleNames));
         }
 
         [HttpPost]
