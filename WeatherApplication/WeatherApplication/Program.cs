@@ -16,7 +16,7 @@ builder.Services.AddDbContext<WeatherDbContext>(
     options => options.UseSqlServer(
         builder.Configuration.GetConnectionString("WeatherConnection")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
