@@ -1,10 +1,43 @@
 ﻿
+@model List<Microsoft.AspNetCore.Identity.IdentityUser>
+
+
 @{
     ViewData["Title"] = "AdminUsers";
 }
 
 <body>
-    <h1>Users</h1>
+   
+        <h2 class="weather-title">Your Last Weather Searches</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var data in Model)
+                    {
+                        <tr>
+                            <td>@data.Id</td>
+                            <td>@data.UserName</td>
+                            <td>@data.Email</td>
+                            <td style="width: 5%">
+                                <form method="post" action="/Weather/Delete" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                                    <input type="hidden" name="id" value="@data.Id" />
+                                    <button type="submit" class="btn btn-danger w-100">X</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+ 
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>

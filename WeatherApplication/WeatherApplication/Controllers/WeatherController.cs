@@ -101,7 +101,10 @@ namespace WeatherApplication.Controllers
         [HttpGet]
         public IActionResult AdminUsers()
         {
-            return View();
+            // Pobierz wszystkie dane z bazy danych
+            var allUsersData = _userManager.Users.ToList();
+      
+         return View(allUsersData);
         }
 
 
