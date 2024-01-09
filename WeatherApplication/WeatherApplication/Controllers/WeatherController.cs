@@ -137,7 +137,9 @@ namespace WeatherApplication.Controllers
         [HttpGet]
         public IActionResult AdminLogs()
         {
-            return View();
+            // Pobierz wszystkie dane z bazy danych
+            var allLogsData = _dbContext.AdminLogs.OrderByDescending(w => w.Id).ToList();
+            return View(allLogsData);
         }
         [HttpGet]
         public IActionResult AdminUsers()
