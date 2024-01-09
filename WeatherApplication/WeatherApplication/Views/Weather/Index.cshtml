@@ -84,35 +84,9 @@
                 </table>
             </div>
         }
-            @if (User.IsInRole("admin"))
-            {
-                <h2 class="weather-title">Your Last Weather Searches</h2>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>Name</th>
+          
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var data in Model.Item3)
-                            {
-                                <tr>
-                                    <td>@data</td>
-
-
-                                </tr>
-                            }
-                        </tbody>
-                </table>
-            </div>
-            }
-
-            <form method="get" action="/Weather/AdminLogs">
-                <input type="hidden" />
-                <button type="submit" class="btn btn-danger w-100">X</button>
-            </form>
+   
 
 
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

@@ -93,6 +93,32 @@ namespace WeatherApplication.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+            {
+                // Handle error (could not delete user)
+                // You might want to log or return an error message
+                return BadRequest("Unable to delete user.");
+            }
+
+            // User deletion successful
+            return RedirectToAction(nameof(AdminUsers));
+        }
+
+
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public IActionResult AdminLogs()
         {
@@ -103,8 +129,11 @@ namespace WeatherApplication.Controllers
         {
             // Pobierz wszystkie dane z bazy danych
             var allUsersData = _userManager.Users.ToList();
-      
-         return View(allUsersData);
+
+            // Exclude the user with email 'admin@admin.com'
+            var filteredUsers = allUsersData.Where(user => user.Email != "admin@admin.com").ToList();
+
+            return View(filteredUsers);
         }
 
 

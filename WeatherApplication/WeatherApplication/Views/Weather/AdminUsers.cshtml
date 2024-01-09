@@ -26,9 +26,10 @@
                             <td>@data.Id</td>
                             <td>@data.UserName</td>
                             <td>@data.Email</td>
+                           
                             <td style="width: 5%">
-                                <form method="post" action="/Weather/Delete" onsubmit="return confirm('Are you sure you want to delete this record?');">
-                                    <input type="hidden" name="id" value="@data.Id" />
+                                <form method="post" action="/Weather/DeleteUser" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                    <input type="hidden" name="userId" value="@data.Id" />
                                     <button type="submit" class="btn btn-danger w-100">X</button>
                                 </form>
                             </td>
