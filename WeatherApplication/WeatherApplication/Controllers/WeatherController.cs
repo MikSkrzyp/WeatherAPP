@@ -93,6 +93,17 @@ namespace WeatherApplication.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        public IActionResult AdminLogs()
+        {
+            return View();
+        }
+        [HttpGet]
+        public IActionResult AdminUsers()
+        {
+            return View();
+        }
+
 
     }
 }
