@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "dXAGgKa4gXn7jcrAdVW7uBb2j/JcAfMu2aYintGk8o9YuNuGy2jZl9/1UkvuyuNRAOdQGu0kzRFjy1AK/10uNQ==",
+  "dgSpecHash": "jR+ubSGUScnxQTX0kLlRLQOftb++RnnIY4Le8i+Ihpy8TjkAnN34mBfv/wAWAzekBgvOYJQYemAxt1QeO0ksVQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\goska\\Desktop\\projektSiSzarp\\v4auth\\WeatherAPP\\WeatherApplication\\WeatherApplication\\WeatherApplication.csproj",
+  "projectFilePath": "C:\\Users\\goska\\Desktop\\projektSiSzarp\\V6\\WeatherAPP\\WeatherApplication\\WeatherApplication\\WeatherApplication.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\goska\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\goska\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\goska\\Desktop\\projektSiSzarp\\v4auth\\WeatherAPP\\WeatherApplication\\WeatherApplication\\WeatherApplication.csproj": {}
+    "C:\\Users\\goska\\Desktop\\projektSiSzarp\\V6\\WeatherAPP\\WeatherApplication\\WeatherApplication\\WeatherApplication.csproj": {}
   },
   "projects": {
-    "C:\\Users\\goska\\Desktop\\projektSiSzarp\\v4auth\\WeatherAPP\\WeatherApplication\\WeatherApplication\\WeatherApplication.csproj": {
+    "C:\\Users\\goska\\Desktop\\projektSiSzarp\\V6\\WeatherAPP\\WeatherApplication\\WeatherApplication\\WeatherApplication.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\goska\\Desktop\\projektSiSzarp\\v4auth\\WeatherAPP\\WeatherApplication\\WeatherApplication\\WeatherApplication.csproj",
+        "projectUniqueName": "C:\\Users\\goska\\Desktop\\projektSiSzarp\\V6\\WeatherAPP\\WeatherApplication\\WeatherApplication\\WeatherApplication.csproj",
         "projectName": "WeatherApplication",
-        "projectPath": "C:\\Users\\goska\\Desktop\\projektSiSzarp\\v4auth\\WeatherAPP\\WeatherApplication\\WeatherApplication\\WeatherApplication.csproj",
+        "projectPath": "C:\\Users\\goska\\Desktop\\projektSiSzarp\\V6\\WeatherAPP\\WeatherApplication\\WeatherApplication\\WeatherApplication.csproj",
         "packagesPath": "C:\\Users\\goska\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\goska\\Desktop\\projektSiSzarp\\v4auth\\WeatherAPP\\WeatherApplication\\WeatherApplication\\obj\\",
+        "outputPath": "C:\\Users\\goska\\Desktop\\projektSiSzarp\\V6\\WeatherAPP\\WeatherApplication\\WeatherApplication\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

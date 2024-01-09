@@ -28,17 +28,19 @@ namespace WeatherApplication.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            // Pobierz wszystkie dane z bazy danych
-            var allUsersData = _userManager.Users.ToList();
-            var allUsersDataUsernames = allUsersData.Select(u => u.UserName).ToList();
+            
 
             var weatherData = _dbContext.WeatherData.OrderByDescending(w => w.Id).ToList();
-            return View(new Tuple<List<WeatherData>, WeatherForecast,List<string>>(weatherData, new WeatherForecast(),allUsersDataUsernames));
+            return View(new Tuple<List<WeatherData>, WeatherForecast>(weatherData, new WeatherForecast()));
         }
 
         [HttpPost]
         public async Task<IActionResult> Index(string city)
         {
+            //get current user
+            var user = await _userManager.GetUserAsync(User);
+
+
             var apiKey = "9b61e791ac55978d74b4c0372ad11745";
             var request = new HttpRequestMessage(HttpMethod.Get,
                 $"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric");
@@ -68,6 +70,19 @@ namespace WeatherApplication.Controllers
 
                 // Pobierz wszystkie dane z bazy danych
                 var allWeatherData = _dbContext.WeatherData.OrderByDescending(w => w.Id).ToList();
+
+                // Logowanie danych do bazy danych
+                var adminLogs = new AdminLogs
+                {
+                    Email = user.Email,
+                    City = weather.City,
+                    Temperature = weather.Temperature.ToString(),
+                    Time = System.DateTime.Now
+                };
+                
+                _dbContext.AdminLogs.Add(adminLogs);
+                await _dbContext.SaveChangesAsync();
+
 
                 return View(new Tuple<List<WeatherData>, WeatherForecast>(allWeatherData, weather));
             }
