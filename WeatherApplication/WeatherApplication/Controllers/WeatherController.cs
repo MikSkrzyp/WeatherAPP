@@ -98,7 +98,7 @@ namespace WeatherApplication.Controllers
             {
                 
                 TempData["ErrorMessage"] = "Failed to retrieve weather data. Please try again.";
-                return View(new Tuple<List<WeatherData>, WeatherForecast>(_dbContext.WeatherData.OrderByDescending(w => w.Id).ToList(), new WeatherForecast()));
+                return RedirectToAction(nameof(Index));
             }
         }
         [HttpPost]
