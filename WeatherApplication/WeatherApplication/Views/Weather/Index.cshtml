@@ -1,6 +1,22 @@
 ﻿@model Tuple<List<WeatherData>, WeatherForecast>
 
+
 <body>
+
+    @if(User.IsInRole("admin"))
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Admin Page</h1>
+                 
+                </div>
+            </div>
+        </div>
+    }
+  
+
+
     <div class="container">
         @if (TempData["ErrorMessage"] != null)
         {
@@ -44,6 +60,7 @@
                                 <th>Conditions</th>
                                 <th>Delete</th>
                             </tr>
+
                         </thead>
                         <tbody>
                             @foreach (var data in Model.Item1)
@@ -65,6 +82,7 @@
                 </div>
             }
         </div>
+
     </div>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>

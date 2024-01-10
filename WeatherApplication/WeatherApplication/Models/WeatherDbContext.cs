@@ -9,6 +9,7 @@ namespace WeatherApplication.Models
         }
 
         public DbSet<WeatherData> WeatherData { get; set; }
+        public DbSet<AdminLogs> AdminLogs { get; set; }
     }
 
 }

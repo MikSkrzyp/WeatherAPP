@@ -7,24 +7,29 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace WeatherApplication.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "user")]
     public class WeatherController : Controller
     {
         private readonly IHttpClientFactory _clientFactory;
         private readonly WeatherDbContext _dbContext;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public WeatherController(IHttpClientFactory clientFactory, WeatherDbContext dbContext)
+        public WeatherController(IHttpClientFactory clientFactory, WeatherDbContext dbContext,UserManager<IdentityUser> userManager)
         {
             _clientFactory = clientFactory;
             _dbContext = dbContext;
+            _userManager = userManager;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
+            
+
             var weatherData = _dbContext.WeatherData.OrderByDescending(w => w.Id).ToList();
             return View(new Tuple<List<WeatherData>, WeatherForecast>(weatherData, new WeatherForecast()));
         }
@@ -33,10 +38,12 @@ namespace WeatherApplication.Controllers
         public async Task<IActionResult> Index(string city)
         {
 
+            //get current user
+            var user = await _userManager.GetUserAsync(User);
 
-            
 
-            var apiKey = "";
+            var apiKey = "9b61e791ac55978d74b4c0372ad11745";
+>>>>>>> oskarv1
             var request = new HttpRequestMessage(HttpMethod.Get,
                 $"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric");
             var client = _clientFactory.CreateClient();
@@ -66,6 +73,19 @@ namespace WeatherApplication.Controllers
                 // Pobierz wszystkie dane z bazy danych
                 var allWeatherData = _dbContext.WeatherData.OrderByDescending(w => w.Id).ToList();
 
+                // Logowanie danych do bazy danych
+                var adminLogs = new AdminLogs
+                {
+                    Email = user.Email,
+                    City = weather.City,
+                    Temperature = weather.Temperature.ToString(),
+                    Time = System.DateTime.Now
+                };
+                
+                _dbContext.AdminLogs.Add(adminLogs);
+                await _dbContext.SaveChangesAsync();
+
+
                 return View(new Tuple<List<WeatherData>, WeatherForecast>(allWeatherData, weather));
             }
             else
@@ -88,6 +108,51 @@ namespace WeatherApplication.Controllers
             await _dbContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+            {
+                // Handle error (could not delete user)
+                // You might want to log or return an error message
+                return BadRequest("Unable to delete user.");
+            }
+
+            // User deletion successful
+            return RedirectToAction(nameof(AdminUsers));
+        }
+
+
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public IActionResult AdminLogs()
+        {
+            // Pobierz wszystkie dane z bazy danych
+            var allLogsData = _dbContext.AdminLogs.OrderByDescending(w => w.Id).ToList();
+            return View(allLogsData);
+        }
+        [HttpGet]
+        public IActionResult AdminUsers()
+        {
+            // Pobierz wszystkie dane z bazy danych
+            var allUsersData = _userManager.Users.ToList();
+
+            // Exclude the user with email 'admin@admin.com'
+            var filteredUsers = allUsersData.Where(user => user.Email != "admin@admin.com").ToList();
+
+            return View(filteredUsers);
         }
 
 
