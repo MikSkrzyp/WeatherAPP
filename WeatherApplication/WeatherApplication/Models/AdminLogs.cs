@@ -8,6 +8,7 @@ namespace WeatherApplication.Models
         public string City { get; set; }
         public string Temperature { get; set; }
         public DateTime Time { get; set; }
+        public string Action { get; set; }
     }
 
 }

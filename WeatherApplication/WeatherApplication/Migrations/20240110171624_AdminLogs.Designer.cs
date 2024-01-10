@@ -12,7 +12,7 @@ using WeatherApplication.Models;
 namespace WeatherApplication.Migrations
 {
     [DbContext(typeof(WeatherDbContext))]
-    [Migration("20240109184207_AdminLogs")]
+    [Migration("20240110171624_AdminLogs")]
     partial class AdminLogs
     {
         /// <inheritdoc />
@@ -32,6 +32,10 @@ namespace WeatherApplication.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -70,6 +74,10 @@ namespace WeatherApplication.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Temperature")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
