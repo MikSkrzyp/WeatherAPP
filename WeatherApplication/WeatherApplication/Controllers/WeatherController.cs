@@ -207,6 +207,7 @@ namespace WeatherApplication.Controllers
             var allLogsData = _dbContext.AdminLogs.OrderByDescending(w => w.Id).ToList();
             return View(allLogsData);
         }
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public IActionResult AdminUsers()
         {
