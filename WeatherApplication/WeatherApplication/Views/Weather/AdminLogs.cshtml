@@ -16,6 +16,7 @@
                     <th>City</th>
                     <th>temperature</th>
                     <th>data</th>
+                    <th>akcja</th>
                     <th>Delete</th>
                 </tr>
             </thead>
@@ -27,6 +28,7 @@
                         <td>@data.City</td>
                         <td>@data.Temperature</td>
                         <td>@data.Time</td>
+                        <td>@data.Action</td>
 
                         <td style="width: 5%">
                             <form method="post" action="/Weather/DeleteLog" onsubmit="return confirm('Are you sure you want to delete this Log?');">

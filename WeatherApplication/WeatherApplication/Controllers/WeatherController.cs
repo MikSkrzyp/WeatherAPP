@@ -84,7 +84,8 @@ namespace WeatherApplication.Controllers
                     Email = user.Email,
                     City = weather.City,
                     Temperature = weather.Temperature.ToString(),
-                    Time = System.DateTime.Now
+                    Time = System.DateTime.Now,
+                    Action = "Add"
                 };
                 
                 _dbContext.AdminLogs.Add(adminLogs);
@@ -103,7 +104,27 @@ namespace WeatherApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
+            //get current user
+            var user = await _userManager.GetUserAsync(User);
             var weatherData = await _dbContext.WeatherData.FindAsync(id);
+
+
+            // Logowanie danych do bazy danych
+            var adminLogs = new AdminLogs
+            {
+                Email = user.Email,
+                City = weatherData.City,
+                Temperature = weatherData.Temperature.ToString(),
+                Time = System.DateTime.Now,
+                Action = "Delete"
+            };
+
+            _dbContext.AdminLogs.Add(adminLogs);
+            await _dbContext.SaveChangesAsync();
+
+
+
+
             if (weatherData == null)
             {
                 return NotFound();
@@ -111,6 +132,10 @@ namespace WeatherApplication.Controllers
 
             _dbContext.WeatherData.Remove(weatherData);
             await _dbContext.SaveChangesAsync();
+
+
+
+
 
             return RedirectToAction(nameof(Index));
         }
