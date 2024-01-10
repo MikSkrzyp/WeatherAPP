@@ -139,6 +139,31 @@ namespace WeatherApplication.Controllers
             return RedirectToAction(nameof(AdminUsers));
         }
 
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteLog(string id)
+        {
+            if (!int.TryParse(id, out int logId))
+            {
+                // Handle invalid ID (not a valid integer)
+                return BadRequest("Invalid ID format");
+            }
+
+            var log = await _dbContext.AdminLogs.FindAsync(logId);
+
+            if (log == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.AdminLogs.Remove(log);
+            await _dbContext.SaveChangesAsync(); // Save changes to persist the deletion
+
+            // Redirect to the action that displays AdminLogs
+            return RedirectToAction(nameof(AdminLogs));
+        }
+
+
 
         [Authorize(Roles = "admin")]
         [HttpGet]
