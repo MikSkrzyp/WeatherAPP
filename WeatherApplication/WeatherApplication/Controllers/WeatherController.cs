@@ -39,12 +39,12 @@ namespace WeatherApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(string city)
         {
-
+            DotNetEnv.Env.Load();
             //get current user
             var user = await _userManager.GetUserAsync(User);
 
 
-            var apiKey = "9b61e791ac55978d74b4c0372ad11745";
+            var apiKey = Environment.GetEnvironmentVariable("API_KEY");
 
             var request = new HttpRequestMessage(HttpMethod.Get,
                 $"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric");
@@ -151,6 +151,7 @@ namespace WeatherApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteLog(string id)
         {
+
             if (!int.TryParse(id, out int logId))
             {
                 // Handle invalid ID (not a valid integer)
