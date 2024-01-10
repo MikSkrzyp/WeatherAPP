@@ -154,6 +154,8 @@ namespace WeatherApplication.Controllers
             // Find and delete associated logs for the user
             var userLogs = _dbContext.AdminLogs.Where(log => log.Email == user.Email);
             _dbContext.AdminLogs.RemoveRange(userLogs);
+            var userWeatherData = _dbContext.WeatherData.Where(i => i.email == user.Email);
+            _dbContext.WeatherData.RemoveRange(userWeatherData);
 
             // Delete the user
             var result = await _userManager.DeleteAsync(user);
