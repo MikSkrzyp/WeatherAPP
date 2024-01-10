@@ -126,6 +126,11 @@ namespace WeatherApplication.Controllers
                 return NotFound();
             }
 
+            // Find and delete associated logs for the user
+            var userLogs = _dbContext.AdminLogs.Where(log => log.Email == user.Email);
+            _dbContext.AdminLogs.RemoveRange(userLogs);
+
+            // Delete the user
             var result = await _userManager.DeleteAsync(user);
 
             if (!result.Succeeded)
@@ -134,6 +139,9 @@ namespace WeatherApplication.Controllers
                 // You might want to log or return an error message
                 return BadRequest("Unable to delete user.");
             }
+
+            // Save changes to persist the deletion of both user and associated logs
+            await _dbContext.SaveChangesAsync();
 
             // User deletion successful
             return RedirectToAction(nameof(AdminUsers));
