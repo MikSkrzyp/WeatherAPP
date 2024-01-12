@@ -2,6 +2,7 @@
 
 namespace WeatherApplication.Models
 {
+ 
     public class WeatherForecast
     {
        
