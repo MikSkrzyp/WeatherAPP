@@ -8,7 +8,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+<<<<<<< HEAD
 using Microsoft.Extensions.Caching.Memory;
+=======
+using System;
+
+>>>>>>> refreshBug
 
 namespace WeatherApplication.Controllers
 {
@@ -33,8 +38,8 @@ namespace WeatherApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var currentUser = await _userManager.GetUserAsync(User);
 
+<<<<<<< HEAD
             // Use the user's email as part of the cache key
             var cacheKey = $"weatherData_{currentUser.Email}";
 
@@ -63,6 +68,26 @@ namespace WeatherApplication.Controllers
             Console.WriteLine($"Loading data from cache took {elapsedTime.TotalMilliseconds} milliseconds");
 
             return View(new Tuple<List<WeatherData>, WeatherForecast>(weatherData, new WeatherForecast()));
+=======
+
+            string jsonData = TempData["WeatherData"] as string;
+          
+
+            if (jsonData != null)
+            {
+                Tuple<List<WeatherData>, WeatherForecast> data = JsonConvert.DeserializeObject<Tuple<List<WeatherData>, WeatherForecast>>(jsonData);
+                // Your existing code
+                return View(data);
+            }
+            else
+            {
+                var currentUser = await _userManager.GetUserAsync(User);
+                var weatherData = _dbContext.WeatherData
+              .Where(w => w.email == currentUser.Email)
+              .OrderByDescending(w => w.Id).ToList();
+                return View(new Tuple<List<WeatherData>, WeatherForecast>(weatherData, new WeatherForecast()));
+            }
+>>>>>>> refreshBug
         }
 
 
@@ -119,12 +144,25 @@ namespace WeatherApplication.Controllers
                 _dbContext.AdminLogs.Add(adminLogs);
                 await _dbContext.SaveChangesAsync();
 
+<<<<<<< HEAD
                 var cacheKey = $"weatherData_{user.Email}";
 
                 // Remove cached weather data for the user
                 _cache.Remove(cacheKey);
 
                 return View("Index", new Tuple<List<WeatherData>, WeatherForecast>(allWeatherData, weather));
+=======
+             
+
+                Tuple<List<WeatherData>, WeatherForecast> dataPassed = new Tuple<List<WeatherData>, WeatherForecast>(allWeatherData, weather);
+
+
+                string jsonData = JsonConvert.SerializeObject(dataPassed);
+                TempData["WeatherData"] = jsonData;
+
+                // Redirect to the "IndexShow" action
+                return RedirectToAction(nameof(Index));
+>>>>>>> refreshBug
             }
             else
             {
@@ -133,6 +171,10 @@ namespace WeatherApplication.Controllers
             }
         }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refreshBug
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {

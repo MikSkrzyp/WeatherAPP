@@ -1,5 +1,6 @@
 ﻿namespace WeatherApplication.Models
 {
+   
     public class WeatherData
     {
         public int Id { get; set; }
