@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace WeatherApplication.Controllers
 {
@@ -17,12 +18,16 @@ namespace WeatherApplication.Controllers
         private readonly IHttpClientFactory _clientFactory;
         private readonly WeatherDbContext _dbContext;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IMemoryCache _cache;
 
-        public WeatherController(IHttpClientFactory clientFactory, WeatherDbContext dbContext,UserManager<IdentityUser> userManager)
+
+        public WeatherController(IMemoryCache cache, IHttpClientFactory clientFactory, WeatherDbContext dbContext,UserManager<IdentityUser> userManager)
         {
             _clientFactory = clientFactory;
             _dbContext = dbContext;
             _userManager = userManager;
+            _cache = cache;
+
         }
 
         [HttpGet]
@@ -30,24 +35,48 @@ namespace WeatherApplication.Controllers
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
-            var weatherData = _dbContext.WeatherData
-                .Where(w => w.email == currentUser.Email)
-                .OrderByDescending(w => w.Id).ToList();
+            // Use the user's email as part of the cache key
+            var cacheKey = $"weatherData_{currentUser.Email}";
+
+            // Start timer before loading data
+            var startTime = DateTime.UtcNow;
+
+            if (!_cache.TryGetValue(cacheKey, out List<WeatherData> weatherData))
+            {
+                // Retrieve weather data from the database
+                weatherData = _dbContext.WeatherData
+                    .Where(w => w.email == currentUser.Email)
+                    .OrderByDescending(w => w.Id).ToList();
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(60));
+                _cache.Set(cacheKey, weatherData, cacheEntryOptions);
+            }
+
+            // Stop timer after loading data
+            var endTime = DateTime.UtcNow;
+
+            // Calculate elapsed time
+            var elapsedTime = endTime - startTime;
+
+            // Log elapsed time (you can replace Console.WriteLine with your preferred logging mechanism)
+            Console.WriteLine($"Loading data from cache took {elapsedTime.TotalMilliseconds} milliseconds");
+
             return View(new Tuple<List<WeatherData>, WeatherForecast>(weatherData, new WeatherForecast()));
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Index(string city)
         {
             DotNetEnv.Env.Load();
-            //get current user
             var user = await _userManager.GetUserAsync(User);
-
 
             var apiKey = Environment.GetEnvironmentVariable("API_KEY");
 
             var request = new HttpRequestMessage(HttpMethod.Get,
                 $"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric");
+
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
 
@@ -55,14 +84,14 @@ namespace WeatherApplication.Controllers
             {
                 var responseStream = await response.Content.ReadAsStringAsync();
                 dynamic data = JsonConvert.DeserializeObject(responseStream);
-              
 
-                WeatherForecast weather = new WeatherForecast();
-                weather.City = data.name;
-                weather.Temperature = data.main.temp;
-                weather.Description = data.weather[0].description;
+                WeatherForecast weather = new WeatherForecast
+                {
+                    City = data.name,
+                    Temperature = data.main.temp,
+                    Description = data.weather[0].description
+                };
 
-                // Zapisywanie dane do bazy danych
                 var weatherData = new WeatherData
                 {
                     City = weather.City,
@@ -70,37 +99,40 @@ namespace WeatherApplication.Controllers
                     Description = weather.Description,
                     email = user.Email
                 };
+
                 _dbContext.WeatherData.Add(weatherData);
                 await _dbContext.SaveChangesAsync();
 
-                // Pobierz wszystkie dane z bazy danych
                 var allWeatherData = _dbContext.WeatherData
-                .Where(w => w.email == user.Email)
-                .OrderByDescending(w => w.Id).ToList();
+                    .Where(w => w.email == user.Email)
+                    .OrderByDescending(w => w.Id).ToList();
 
-                // Logowanie danych do bazy danych
                 var adminLogs = new AdminLogs
                 {
                     Email = user.Email,
                     City = weather.City,
                     Temperature = weather.Temperature.ToString(),
-                    Time = System.DateTime.Now,
+                    Time = DateTime.Now,
                     Action = "Add"
                 };
-                
+
                 _dbContext.AdminLogs.Add(adminLogs);
                 await _dbContext.SaveChangesAsync();
 
+                var cacheKey = $"weatherData_{user.Email}";
 
-                return View(new Tuple<List<WeatherData>, WeatherForecast>(allWeatherData, weather));
+                // Remove cached weather data for the user
+                _cache.Remove(cacheKey);
+
+                return View("Index", new Tuple<List<WeatherData>, WeatherForecast>(allWeatherData, weather));
             }
             else
             {
-                
                 TempData["ErrorMessage"] = "Failed to retrieve weather data. Please try again.";
                 return RedirectToAction(nameof(Index));
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
@@ -136,6 +168,11 @@ namespace WeatherApplication.Controllers
 
 
 
+
+            var cacheKey = $"weatherData_{user.Email}";
+
+            // Remove cached weather data for the user
+            _cache.Remove(cacheKey);
 
             return RedirectToAction(nameof(Index));
         }
@@ -220,6 +257,23 @@ namespace WeatherApplication.Controllers
             var filteredUsers = allUsersData.Where(user => user.Email != "admin@admin.com").ToList();
 
             return View(filteredUsers);
+        }
+        [HttpGet]
+        public IActionResult CacheCheck()
+        {
+            var currentUser = _userManager.GetUserAsync(User).Result;
+            var cacheKey = $"weatherData_{currentUser.Email}";
+
+            if (_cache.TryGetValue(cacheKey, out List<WeatherData> cachedWeatherData))
+            {
+                ViewBag.Message = "Cache is working!";
+                return View(new Tuple<List<WeatherData>, WeatherForecast>(cachedWeatherData, new WeatherForecast()));
+            }
+            else
+            {
+                ViewBag.Message = "Cache is empty or expired. Try fetching data first.";
+                return View();
+            }
         }
 
 

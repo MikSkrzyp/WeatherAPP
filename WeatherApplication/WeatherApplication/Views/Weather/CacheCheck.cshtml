@@ -1,0 +1,16 @@
+﻿@model Tuple<List<WeatherData>, WeatherForecast>
+
+<h2>Cache Check</h2>
+
+<p>@ViewBag.Message</p>
+
+@if (Model != null && Model.Item1 != null && Model.Item1.Any())
+{
+    <h3>Cached Weather Data</h3>
+    <ul>
+        @foreach (var weatherData in Model.Item1)
+        {
+            <li>@weatherData.City - @weatherData.Temperature°C - @weatherData.Description</li>
+        }
+    </ul>
+}
