@@ -8,12 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-<<<<<<< HEAD
 using Microsoft.Extensions.Caching.Memory;
-=======
+
 using System;
 
->>>>>>> refreshBug
+
 
 namespace WeatherApplication.Controllers
 {
@@ -34,44 +33,12 @@ namespace WeatherApplication.Controllers
             _cache = cache;
 
         }
-
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-
-<<<<<<< HEAD
-            // Use the user's email as part of the cache key
-            var cacheKey = $"weatherData_{currentUser.Email}";
-
-            // Start timer before loading data
-            var startTime = DateTime.UtcNow;
-
-            if (!_cache.TryGetValue(cacheKey, out List<WeatherData> weatherData))
-            {
-                // Retrieve weather data from the database
-                weatherData = _dbContext.WeatherData
-                    .Where(w => w.email == currentUser.Email)
-                    .OrderByDescending(w => w.Id).ToList();
-
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromSeconds(60));
-                _cache.Set(cacheKey, weatherData, cacheEntryOptions);
-            }
-
-            // Stop timer after loading data
-            var endTime = DateTime.UtcNow;
-
-            // Calculate elapsed time
-            var elapsedTime = endTime - startTime;
-
-            // Log elapsed time (you can replace Console.WriteLine with your preferred logging mechanism)
-            Console.WriteLine($"Loading data from cache took {elapsedTime.TotalMilliseconds} milliseconds");
-
-            return View(new Tuple<List<WeatherData>, WeatherForecast>(weatherData, new WeatherForecast()));
-=======
+            var currentUser = await _userManager.GetUserAsync(User);
 
             string jsonData = TempData["WeatherData"] as string;
-          
 
             if (jsonData != null)
             {
@@ -81,15 +48,36 @@ namespace WeatherApplication.Controllers
             }
             else
             {
-                var currentUser = await _userManager.GetUserAsync(User);
-                var weatherData = _dbContext.WeatherData
-              .Where(w => w.email == currentUser.Email)
-              .OrderByDescending(w => w.Id).ToList();
+                // Use the user's email as part of the cache key
+                var cacheKey = $"weatherData_{currentUser.Email}";
+
+                // Start timer before loading data
+                var startTime = DateTime.UtcNow;
+
+                if (!_cache.TryGetValue(cacheKey, out List<WeatherData> weatherData))
+                {
+                    // Retrieve weather data from the database
+                    weatherData = _dbContext.WeatherData
+                        .Where(w => w.email == currentUser.Email)
+                        .OrderByDescending(w => w.Id).ToList();
+
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(5));
+                    _cache.Set(cacheKey, weatherData, cacheEntryOptions);
+                }
+
+                // Stop timer after loading data
+                var endTime = DateTime.UtcNow;
+
+                // Calculate elapsed time
+                var elapsedTime = endTime - startTime;
+
+                // Log elapsed time (you can replace Console.WriteLine with your preferred logging mechanism)
+                Console.WriteLine($"Loading data from cache took {elapsedTime.TotalMilliseconds} milliseconds");
+
                 return View(new Tuple<List<WeatherData>, WeatherForecast>(weatherData, new WeatherForecast()));
             }
->>>>>>> refreshBug
         }
-
 
         [HttpPost]
         public async Task<IActionResult> Index(string city)
@@ -97,7 +85,7 @@ namespace WeatherApplication.Controllers
             DotNetEnv.Env.Load();
             var user = await _userManager.GetUserAsync(User);
 
-            var apiKey = Environment.GetEnvironmentVariable("API_KEY");
+            var apiKey = "9b61e791ac55978d74b4c0372ad11745";
 
             var request = new HttpRequestMessage(HttpMethod.Get,
                 $"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric");
@@ -144,25 +132,14 @@ namespace WeatherApplication.Controllers
                 _dbContext.AdminLogs.Add(adminLogs);
                 await _dbContext.SaveChangesAsync();
 
-<<<<<<< HEAD
                 var cacheKey = $"weatherData_{user.Email}";
 
                 // Remove cached weather data for the user
                 _cache.Remove(cacheKey);
 
-                return View("Index", new Tuple<List<WeatherData>, WeatherForecast>(allWeatherData, weather));
-=======
-             
-
-                Tuple<List<WeatherData>, WeatherForecast> dataPassed = new Tuple<List<WeatherData>, WeatherForecast>(allWeatherData, weather);
-
-
-                string jsonData = JsonConvert.SerializeObject(dataPassed);
-                TempData["WeatherData"] = jsonData;
-
-                // Redirect to the "IndexShow" action
+                // Redirect to the "Index" action with updated data
+                TempData["WeatherData"] = JsonConvert.SerializeObject(new Tuple<List<WeatherData>, WeatherForecast>(allWeatherData, weather));
                 return RedirectToAction(nameof(Index));
->>>>>>> refreshBug
             }
             else
             {
@@ -171,10 +148,7 @@ namespace WeatherApplication.Controllers
             }
         }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> refreshBug
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
