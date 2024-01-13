@@ -85,7 +85,7 @@ namespace WeatherApplication.Controllers
             DotNetEnv.Env.Load();
             var user = await _userManager.GetUserAsync(User);
 
-            var apiKey = "9b61e791ac55978d74b4c0372ad11745";
+            var apiKey = Environment.GetEnvironmentVariable("API_KEY");
 
             var request = new HttpRequestMessage(HttpMethod.Get,
                 $"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric");
