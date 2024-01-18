@@ -130,7 +130,7 @@ namespace WeatherApplication.Areas.Identity.Pages.Account
 
 
                     _logger.LogInformation("User created a new account with password.");
-
+                    // Adding default role for newly register user
                     var defaultrole = _roleManager.FindByNameAsync("user").Result;
 
                     if (defaultrole != null)

@@ -18,6 +18,7 @@ namespace WeatherApplication.Controllers
             return View();
         }
 
+        // handling about us page
         public IActionResult Privacy()
         {
             return View();

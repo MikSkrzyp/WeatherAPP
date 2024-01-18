@@ -12,21 +12,24 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// adding WeatherDbContext (including AdminLogs and WeatherData)
 builder.Services.AddDbContext<WeatherDbContext>(
     options => options.UseSqlServer(
         builder.Configuration.GetConnectionString("WeatherConnection")));
 
+//Identity 
 builder.Services
     .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+//Adding Http Clients to get weather API
 builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
-
+//Creating Roles  Admin and users
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -42,7 +45,7 @@ using (var scope = app.Services.CreateScope())
     }
 
 }
-
+//Creating user admin and if it doesn't exist add to database
 using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
